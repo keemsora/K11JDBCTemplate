@@ -16,6 +16,8 @@ import springboard.command.DeleteActionCommand;
 import springboard.command.EditActionCommand;
 import springboard.command.EditCommand;
 import springboard.command.ListCommand;
+import springboard.command.ReplyActionCommand;
+import springboard.command.ReplyCommand;
 import springboard.command.ViewCommand;
 import springboard.command.WriteActionCommand;
 import springboard.model.JDBCTemplateDAO;
@@ -163,5 +165,31 @@ public class BbsController {
 		return "redirect:view.do";
 	}
 	
+	//답변글 작성폼
+	@RequestMapping("/board/reply.do")
+	public String reply(HttpServletRequest req, Model model) {
+		System.out.println("reply()메소드 호출");
+		
+		model.addAttribute("req", req);
+		command = new ReplyCommand();
+		command.execute(model);
+		
+		model.addAttribute("idx", req.getParameter("idx"));
+		return "07Board/reply";
+	}
+	
+	//답변글 입력하기
+	@RequestMapping("/board/replyAction.do")
+	public String replyAction(HttpServletRequest req,
+			Model model, SpringBbsDTO springBbsDTO) {
+		//커맨드객체를 통해 입력폼에서 전송한 내용을 한 번에 저장
+		model.addAttribute("springBbsDTO", springBbsDTO);
+		model.addAttribute("req", req);
+		command = new ReplyActionCommand();
+		command.execute(model);
+		
+		model.addAttribute("nowPage", req.getParameter("nowPage"));
+		return "redirect:list.do";
+	}
 	
 }
